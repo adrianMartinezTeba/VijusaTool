@@ -1,4 +1,16 @@
 {
+  
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Herramienta de trabajo para una empresa",
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
