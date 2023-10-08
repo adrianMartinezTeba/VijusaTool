@@ -23,7 +23,7 @@ const VariableController = {
 
   async getVariableById(req, res) {
     try {
-      const variable = await Variable.findById(req.params.id);
+      const variable = await Variable.findById(req.params._id);
       res.send(variable);
     } catch (error) {
       console.error(error);
@@ -34,7 +34,7 @@ const VariableController = {
   async updateVariable(req, res) {
     try {
       const updatedVariable = await Variable.findByIdAndUpdate(
-        req.params.id,
+        req.params._id,
         req.body,
         { new: true }
       );
@@ -47,7 +47,7 @@ const VariableController = {
 
   async deleteVariable(req, res) {
     try {
-      await Variable.findByIdAndDelete(req.params.id);
+      await Variable.findByIdAndDelete(req.params._id);
       res.send({ message: "Variable eliminada con éxito" });
     } catch (error) {
       console.error(error);

@@ -23,7 +23,7 @@ const ProductController = {
 
   async getProductById(req, res) {
     try {
-      const product = await Product.findById(req.params.id);
+      const product = await Product.findById(req.params._id);
       res.send(product);
     } catch (error) {
       console.error(error);
@@ -34,7 +34,7 @@ const ProductController = {
   async updateProduct(req, res) {
     try {
       const updatedProduct = await Product.findByIdAndUpdate(
-        req.params.id,
+        req.params._id,
         req.body,
         { new: true }
       );
@@ -47,7 +47,7 @@ const ProductController = {
 
   async deleteProduct(req, res) {
     try {
-      await Product.findByIdAndDelete(req.params.id);
+      await Product.findByIdAndDelete(req.params._id);
       res.send({ message: "Producto eliminado con éxito" });
     } catch (error) {
       console.error(error);

@@ -11,8 +11,8 @@ app.use(cors());
 
 dbConnection();
 
-app.use("/users", require("./routes/users"));
-
+app.use("/product", require("./routes/product"));
+app.use('/variable', require('./routes/variable'));
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
