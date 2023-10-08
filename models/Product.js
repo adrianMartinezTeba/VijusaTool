@@ -4,6 +4,7 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 const ProductSchema = new mongoose.Schema(
     {
         name: { type: String, required: true }, // Nombre del producto
+        category: { type: String, required: true },
         description: { type: String},
         // image: { type: String, required: true },
         variables: [{ type: ObjectId, ref: "Variable", required: true }], // Imagen del producto
