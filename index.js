@@ -12,7 +12,11 @@ app.use(cors());
 dbConnection();
 
 app.use("/product", require("./routes/product"));
-app.use('/variable', require('./routes/variable'));
+app.use("/user", require("./routes/user"));
+app.use("/order", require("./routes/order"));
+app.use("/contact", require("./routes/contact"));
+app.use("/operationToFollow", require("./routes/operationToFollow"));
+app.use("/rawMaterial", require("./routes/rawMaterial"));
 app.get("/", (req, res) => {
   res.send("Hello world");
 });
