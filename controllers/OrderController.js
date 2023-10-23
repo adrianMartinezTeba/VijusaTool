@@ -3,9 +3,9 @@ const Order = require("../models/Order");
 const OrderController = {
     async createOrder(req, res, next) {
         try {
-            const { products, description, customerId, customerName, price } = req.body;
 
-            const order = await Order.create({ products, description, customerId, customerName, price });
+
+            const order = await Order.create(req.body);
             res.status(201).json({ message: "Orden creada con éxito", order });
         } catch (error) {
             console.error(error);

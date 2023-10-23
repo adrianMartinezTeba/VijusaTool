@@ -1,14 +1,15 @@
 const mongoose = require("mongoose");
+const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const RawMaterialSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true }, // Nombre de la materia prima
-        material: { type: String,enum:["Latón", "Acero", "Aluminio"], required: true },
-        diámetro: { type: String, required: true },
-        forma: { type: String ,enum:['Tubo','Pletina'], required: true },
-        tamañoDelCorte: { type: Number, required: true },
-        operationToFixPrice: { type: String,enum:['sum','subtract','multiply','divide','percent'], required: true },
-        value: { type: Number, required: true },
+        material: { type: ObjectId, ref: "Material", required: true },
+        typeMat: { type: ObjectId, ref: "TypeMat", required: true },
+        externalDiameter: { type: String},//en mm+
+        internalDiameter: { type: String },//en mm  
+        priceKg: { type: Number, required: true },
+        wheightMeter: { type: Number, required: true },
+        priceMetro: { type: Number, required: true },
     },
     { timestamps: true }
 );

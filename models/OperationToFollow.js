@@ -2,11 +2,10 @@ const mongoose = require("mongoose");
 
 const OperationToFollowSchema = new mongoose.Schema(
     {
-        name: { type: String, required: true, enum:['Cortar','Fresar','Soldar'] }, // Nombre de la operación
-        time: { type: Number },
+        name: { type: String, required: true }, // Nombre de la operación
         codeOperation: { type: Number },
-        operationToFixPrice: { type: String,enum:['sum','subtract','multiply','divide','percent'], required: true },
-        value: { type: Number, required: true },
+        notes: { type: String  },
+        priceHourEur: { type: Number, required: true },
     },
     { timestamps: true }
 );

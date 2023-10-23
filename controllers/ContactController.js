@@ -3,15 +3,13 @@ const Contact = require("../models/Contact");
 const ContactController = {
     async createContact(req, res, next) {
         try {
-            const { name, address, type, tlfn, ordersIds } = req.body;
-
-            const contact = await Contact.create({ name, address, type, tlfn, ordersIds });
-            res.status(201).json({ message: "Contacto creado con éxito", contact });
+          const contact = await Contact.create(req.body);
+          res.status(201).json({ message: "Contacto creado con éxito", contact });
         } catch (error) {
-            console.error(error);
-            next(error);
+          console.error(error);
+          next(error);
         }
-    },
+      },
 
     async getContacts(req, res) {
         try {

@@ -3,9 +3,8 @@ const OperationToFollow = require("../models/OperationToFollow");
 const OperationToFollowController = {
     async createOperationToFollow(req, res, next) {
         try {
-            const { name, time, codeOperation, operationToFixPrice, value } = req.body;
 
-            const operationToFollow = await OperationToFollow.create({ name, time, codeOperation, operationToFixPrice, value });
+            const operationToFollow = await OperationToFollow.create(req.body);
             res.status(201).json({ message: "Operación a seguir creada con éxito", operationToFollow });
         } catch (error) {
             console.error(error);
@@ -55,7 +54,39 @@ const OperationToFollowController = {
             console.error(error);
             res.status(500).send(error);
         }
-    }
+    },
+    async searchByCode (req, res) {
+        try {
+            const codeOperation = req.params.codeOperation;
+            const result = await OperationToFollow.find({ codeOperation: codeOperation });
+            res.send(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    async searchByName (req, res) {
+        try {
+            const name = req.params.name;
+            const result = await OperationToFollow.find({ name: name });
+            res.send(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    async searchByShape(req, res) {
+        try {
+            const shape = req.params.shape;
+            const result = await OperationToFollow.find({ shape: shape });
+            res.send(result);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
 };
 
 module.exports = OperationToFollowController;

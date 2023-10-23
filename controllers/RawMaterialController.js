@@ -3,13 +3,13 @@ const RawMaterial = require("../models/RawMaterial");
 const RawMaterialController = {
     async createRawMaterial(req, res, next) {
         try {
-            const { name, material, diámetro, forma, tamañoDelCorte, operationToFixPrice, value } = req.body;
 
-            const rawMaterial = await RawMaterial.create({ name, material, diámetro, forma, tamañoDelCorte, operationToFixPrice, value });
-            res.status(201).json({ message: "Materia prima creada con éxito", rawMaterial });
+      
+          const rawMaterial = await RawMaterial.create(req.body);
+          res.status(201).json({ message: "Materia prima creada con éxito", rawMaterial });
         } catch (error) {
-            console.error(error);
-            next(error);
+          console.error(error);
+          next(error);
         }
     },
 
@@ -51,6 +51,28 @@ const RawMaterialController = {
         try {
             await RawMaterial.findByIdAndDelete(req.params._id);
             res.send({ message: "Materia prima eliminada con éxito" });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    async searchByMaterial(req, res) {
+        const { material } = req.params;
+        try {
+            const rawMaterials = await RawMaterial.find({ material: material });
+            res.send(rawMaterials);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
+
+    async searchByShape(req, res) {
+        const { shape } = req.params;
+        try {
+            const rawMaterials = await RawMaterial.find({ forma: shape });
+            res.send(rawMaterials);
         } catch (error) {
             console.error(error);
             res.status(500).send(error);

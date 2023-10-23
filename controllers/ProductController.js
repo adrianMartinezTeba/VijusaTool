@@ -3,25 +3,7 @@ const Product = require("../models/Product");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
-            const {
-                name,
-                category,
-                description,
-                sections,
-                price,
-                customerId,
-                notes
-            } = req.body;
-
-            const product = await Product.create({
-                name,
-                category,
-                description,
-                sections,
-                price,
-                customerId,
-                notes
-            });
+            const product = await Product.create(req.body);
             res.status(201).json({ message: "Producto creado con éxito", product });
         } catch (error) {
             console.error(error);
