@@ -15,7 +15,7 @@ const RawMaterialController = {
 
     async getRawMaterials(req, res) {
         try {
-            const rawMaterials = await RawMaterial.find();
+            const rawMaterials = await RawMaterial.find().populate("material").populate("typeMat");
             res.send(rawMaterials);
         } catch (error) {
             console.error(error);
