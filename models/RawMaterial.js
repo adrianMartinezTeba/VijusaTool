@@ -10,6 +10,7 @@ const RawMaterialSchema = new mongoose.Schema(
         priceKg: { type: Number, required: true },
         wheightMeter: { type: Number, required: true },
         priceMetro: { type: Number, required: true },
+        stock : { type: String}
     },
     { timestamps: true }
 );

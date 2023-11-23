@@ -3,7 +3,7 @@ const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const MaterialSchema = new mongoose.Schema(
     {
-    name:{ type: String, required: true },
+    nameMaterial:{ type: String, required: true },
     },
     { timestamps: true }
 );
