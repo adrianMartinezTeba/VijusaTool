@@ -15,7 +15,7 @@ const OrderController = {
 
     async getOrders(req, res) {
         try {
-            const orders = await Order.find();
+            const orders = await Order.find().populate("contact");
             res.send(orders);
         } catch (error) {
             console.error(error);

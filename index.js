@@ -17,8 +17,7 @@ app.use("/order", require("./routes/order"));
 app.use("/contact", require("./routes/contact"));
 app.use("/operationToFollow", require("./routes/operationToFollow"));
 app.use("/rawMaterial", require("./routes/rawMaterial"));
-app.use("/material", require("./routes/material"));
-app.use("/shape", require("./routes/shape"));
+app.use("/ruteToFollow", require("./routes/ruteToFollow"));
 app.get("/", (req, res) => {
   res.send("Hello world");
 });

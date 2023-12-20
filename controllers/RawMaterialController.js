@@ -3,8 +3,6 @@ const RawMaterial = require("../models/RawMaterial");
 const RawMaterialController = {
     async createRawMaterial(req, res, next) {
         try {
-
-      
           const rawMaterial = await RawMaterial.create(req.body);
           res.status(201).json({ message: "Materia prima creada con éxito", rawMaterial });
         } catch (error) {
@@ -15,14 +13,13 @@ const RawMaterialController = {
 
     async getRawMaterials(req, res) {
         try {
-            const rawMaterials = await RawMaterial.find().populate("material").populate("typeMat");
+            const rawMaterials = await RawMaterial.find();
             res.send(rawMaterials);
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
         }
     },
-
     async getRawMaterialById(req, res) {
         try {
             const rawMaterial = await RawMaterial.findById(req.params._id);

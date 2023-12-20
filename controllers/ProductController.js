@@ -3,7 +3,9 @@ const Product = require("../models/Product");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
+            console.log(req.body);
             const product = await Product.create(req.body);
+
             res.status(201).json({ message: "Producto creado con éxito", product });
         } catch (error) {
             console.error(error);
@@ -13,7 +15,7 @@ const ProductController = {
 
     async getProducts(req, res) {
         try {
-            const products = await Product.find();
+            const products = await Product.find().populate('customerId');
             res.send(products);
         } catch (error) {
             console.error(error);
@@ -53,7 +55,22 @@ const ProductController = {
             console.error(error);
             res.status(500).send(error);
         }
-    }
+    } ,
+     async getLastProduct(req, res) {
+        try {
+            const lastProduct = await Product.findOne().sort({ createdAt: -1 }).populate('contactId').populate('rawMaterials.rawMaterialId').populate('operationsToFollow.operationId');
+        
+
+            if (!lastProduct) {
+                return res.status(404).json({ message: "No hay productos disponibles." });
+            }
+
+            res.send(lastProduct);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    },
 };
 
 module.exports = ProductController;
