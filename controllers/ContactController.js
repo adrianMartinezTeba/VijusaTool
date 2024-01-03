@@ -30,7 +30,22 @@ const ContactController = {
             res.status(500).send(error);
         }
     },
-
+    async getContactByName(req, res) {
+        try {
+          const contactName = req.params.name;
+    
+          if (!contactName) {
+            return res.status(400).json({ error: 'El parámetro "name" es requerido para la búsqueda.' });
+          }
+    
+          const contacts = await Contact.find({ name: { $regex: new RegExp(contactName, 'i') } });
+    
+          res.json(contacts);
+        } catch (error) {
+          console.error('Error al buscar contactos por nombre:', error);
+          res.status(500).json({ error: 'Error interno del servidor.' });
+        }
+      },
     async updateContact(req, res) {
         try {
             const updatedContact = await Contact.findByIdAndUpdate(

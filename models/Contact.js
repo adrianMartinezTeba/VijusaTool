@@ -16,6 +16,7 @@ const ContactSchema = new mongoose.Schema(
         tlfn: { type: Number,required: true},
         notes: [{ type: String }],
         ordersIds: [{ type: ObjectId, ref: "Order"}],
+        productsIds: [{ type: ObjectId, ref: "Product"}],
         productsProvided: {type: String},
     },
     { timestamps: true }

@@ -1,11 +1,17 @@
 const Product = require("../models/Product");
-
+const Contact = require("../models/Contact");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
             console.log(req.body);
             const product = await Product.create(req.body);
-
+           // Actualizar el contacto asociado con el productId
+           const contactId = req.body.contactId;
+           await Contact.findByIdAndUpdate(
+               contactId,
+               { $push: { productsIds: product._id } },
+               { new: true }
+           );
             res.status(201).json({ message: "Producto creado con éxito", product });
         } catch (error) {
             console.error(error);
