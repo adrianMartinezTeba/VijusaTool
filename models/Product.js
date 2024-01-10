@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const ProductSchema = new mongoose.Schema(
-    {
+    {   
+        number: { type: Number, required: true },
         modelName: { type: String, required: true },
         contactId: { type: ObjectId, ref: "Contact", required: true }, // Que lo coge del Id del Customer que viene en la orden
         rawMaterials: [

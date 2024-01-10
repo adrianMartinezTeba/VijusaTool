@@ -3,8 +3,9 @@ const Contact = require("../models/Contact");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
-            console.log(req.body);
-            const product = await Product.create(req.body);
+            const product = await Product.create(
+                {...req.body,
+                number: req.number});
            // Actualizar el contacto asociado con el productId
            const contactId = req.body.contactId;
            await Contact.findByIdAndUpdate(
@@ -64,9 +65,9 @@ const ProductController = {
     } ,
      async getLastProduct(req, res) {
         try {
-            const lastProduct = await Product.findOne().sort({ createdAt: -1 }).populate('contactId').populate('rawMaterials.rawMaterialId').populate('operationsToFollow.operationId');
-        
-
+            const products = await Product.find();
+            console.log(products);
+            const lastProduct = await Product.findOne().sort({ number: -1 }).populate('contactId').populate('rawMaterials.rawMaterialId').populate('operationsToFollow.operationId');
             if (!lastProduct) {
                 return res.status(404).json({ message: "No hay productos disponibles." });
             }

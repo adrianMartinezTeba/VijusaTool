@@ -1,9 +1,10 @@
 const express = require("express")
 const ProductController = require("../controllers/ProductController")
+const numProducts = require("../middlewares/NumProducts")
 const router = express.Router()
 
 
-router.post("/create",ProductController.createProduct)
+router.post("/create",numProducts,ProductController.createProduct)
 router.get("/get",ProductController.getProducts)
 router.get("/get/:_id",ProductController.getProductById)
 router.get("/getLast",ProductController.getLastProduct)

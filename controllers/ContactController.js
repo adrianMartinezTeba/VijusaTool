@@ -33,8 +33,7 @@ const ContactController = {
     async getContactByName(req, res) {
         try {
           const contactName = req.params.name;
-    
-          if (!contactName) {
+            if (!contactName) {
             return res.status(400).json({ error: 'El parámetro "name" es requerido para la búsqueda.' });
           }
     
