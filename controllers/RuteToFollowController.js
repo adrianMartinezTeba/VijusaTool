@@ -1,16 +1,37 @@
 const RuteToFollow = require("../models/RuteToFollow");
-
+const Product = require("../models/Product");
 const RuteToFollowController = {
     async createRuteToFollow(req, res, next) {
         try {
-            const ruteToFollow = await RuteToFollow.create(req.body);
+            // Desestructura el productId del cuerpo de la solicitud
+            const { productId, ...ruteToFollowData } = req.body;
+    
+            // Verifica si productId está presente en el cuerpo de la solicitud
+            if (!productId) {
+                return res.status(400).json({ message: "ProductId is required to associate the RuteToFollow with a product." });
+            }
+    
+            // Busca el producto correspondiente por su productId
+            const product = await Product.findById(productId);
+            
+            // Verifica si el producto existe
+            if (!product) {
+                return res.status(404).json({ message: "Product not found." });
+            }
+    
+            // Asocia la ruta a seguir con el producto
+            const ruteToFollow = await RuteToFollow.create({ ...ruteToFollowData, productId });
+    
+            // Actualiza el campo ruteToFollow del producto con el ID de la nueva ruta a seguir
+            product.ruteToFollow = ruteToFollow._id;
+            await product.save();
+    
             res.status(201).json({ message: "Ruta creada con éxito", ruteToFollow });
         } catch (error) {
             console.error(error);
             next(error);
         }
     },
-
     async getRutesToFollow(req, res) {
         try {
             const rutesToFollow = await RuteToFollow.find().populate("contactId").populate("productId");

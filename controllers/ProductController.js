@@ -22,24 +22,52 @@ const ProductController = {
 
     async getProducts(req, res) {
         try {
-            const products = await Product.find().populate('customerId');
+            const products = await Product.find().populate('contactId').populate('rawMaterials.rawMaterialId').populate('operationsToFollow.operationId');
             res.send(products);
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
         }
     },
-
-    async getProductById(req, res) {
+    async getProductsWithOutRTF(req, res) {
         try {
-            const product = await Product.findById(req.params._id);
-            res.send(product);
+            const products = await Product.find({ ruteToFollow: { $exists: false } })
+                .populate('contactId')
+                .populate('rawMaterials.rawMaterialId')
+                .populate('operationsToFollow.operationId');
+            res.send(products);
         } catch (error) {
             console.error(error);
             res.status(500).send(error);
         }
     },
-
+    async getProductById(req, res) {
+        try {
+          const product = await Product.findById(req.params._id)
+            .populate('contactId')
+            .populate({
+              path: 'rawMaterials.rawMaterialId',
+              model: 'RawMaterial'
+            })
+            .populate({
+              path: 'operationsToFollow.operationId',
+              model: 'OperationToFollow'
+            })
+            .populate('ruteToFollow')
+            .populate({
+                path: 'ruteToFollow.rawMaterials.rawMaterialId',
+                model: 'RawMaterial'
+              })
+            //   .populate({
+            //     path: 'ruteToFollow.rawMaterials.operationsToFollow.operationId',
+            //     model: 'OperationToFollow'
+            //   })
+          res.send(product);
+        } catch (error) {
+          console.error(error);
+          res.status(500).send(error);
+        }
+      },
     async updateProduct(req, res) {
         try {
             const updatedProduct = await Product.findByIdAndUpdate(

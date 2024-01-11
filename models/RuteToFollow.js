@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.SchemaTypes.ObjectId;
 
 const RuteToFollowSchema = new mongoose.Schema(
-    {
+    { 
+        productId: { type: ObjectId, ref: "Product", required: true },
         rawMaterials: [{
-            productId: { type: ObjectId, ref: "Product", required: true },
             contactId: { type: ObjectId, ref: "Contact", required: true },
             rawMaterialId: { type: ObjectId, ref: "RawMaterial", required: true },
             cantidadDeCortes: { type: Number, required: true },

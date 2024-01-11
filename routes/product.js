@@ -6,6 +6,7 @@ const router = express.Router()
 
 router.post("/create",numProducts,ProductController.createProduct)
 router.get("/get",ProductController.getProducts)
+router.get("/getWithoutRTF",ProductController.getProductsWithOutRTF)
 router.get("/get/:_id",ProductController.getProductById)
 router.get("/getLast",ProductController.getLastProduct)
 router.put("/update/:_id",ProductController.updateProduct)
