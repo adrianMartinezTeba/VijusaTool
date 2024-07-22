@@ -1,5 +1,7 @@
 const Product = require("../models/Product");
 const Contact = require("../models/Contact");
+const RuteToFollow = require("../models/RuteToFollow");
+const OperationToFollow = require("../models/OperationToFollow");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
@@ -43,31 +45,43 @@ const ProductController = {
     },
     async getProductById(req, res) {
         try {
-          const product = await Product.findById(req.params._id)
-            .populate('contactId')
-            .populate({
-              path: 'rawMaterials.rawMaterialId',
-              model: 'RawMaterial'
-            })
-            .populate({
-              path: 'operationsToFollow.operationId',
-              model: 'OperationToFollow'
-            })
-            .populate('ruteToFollow')
-            .populate({
-                path: 'ruteToFollow.rawMaterials.rawMaterialId',
+            const product = await Product.findById(req.params._id)
+                .populate('contactId')
+                .populate({
+                    path: 'rawMaterials.rawMaterialId',
+                    model: 'RawMaterial'
+                })
+                .populate({
+                    path: 'operationsToFollow.operationId',
+                    model: 'OperationToFollow'
+                })
+                .populate('ruteToFollow');
+    
+            const rtf = await RuteToFollow.findById(product.ruteToFollow).populate({
+                path: 'rawMaterials.rawMaterialId',
                 model: 'RawMaterial'
-              })
-            //   .populate({
-            //     path: 'ruteToFollow.rawMaterials.operationsToFollow.operationId',
-            //     model: 'OperationToFollow'
-            //   })
-          res.send(product);
+            });
+    
+            // Obtener información completa de las operaciones a seguir en rtf
+            const operationsToFollowInfo = rtf.rawMaterials.map(material => material.operationsToFollow)
+                .flat()
+                .map(operation => ({
+                    operationId: operation.operationId,
+                    notes: operation.notes,
+                }));
+    
+            // Obtener las operaciones por sus IDs
+            const operationIds = operationsToFollowInfo.map(operation => operation.operationId);
+            const allOperations = await OperationToFollow.find({ _id: { $in: operationIds } });
+    
+            console.log({ product: product, rtf: rtf, operationsToFollowInfo: operationsToFollowInfo, allOperations: allOperations });
+            res.send(product);
         } catch (error) {
-          console.error(error);
-          res.status(500).send(error);
+            console.error(error);
+            res.status(500).send(error);
         }
-      },
+    },
+    
     async updateProduct(req, res) {
         try {
             const updatedProduct = await Product.findByIdAndUpdate(
@@ -105,7 +119,7 @@ const ProductController = {
             console.error(error);
             res.status(500).send(error);
         }
-    },
+    }
 };
 
 module.exports = ProductController;

@@ -4,7 +4,7 @@ const ContactController = {
     async createContact(req, res, next) {
         try {
           const contact = await Contact.create(req.body);
-          res.status(201).json({ message: "Contacto creado con éxito", contact });
+          res.status(201).send({ message: "Contacto creado con éxito", contact });
         } catch (error) {
           console.error(error);
           next(error);
