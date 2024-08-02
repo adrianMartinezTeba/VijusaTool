@@ -4,7 +4,7 @@ const OperationToFollowSchema = new mongoose.Schema(
     {   
         name: { type: String, required: true }, // Nombre de la operación
         codeOperation: { type: Number, required: true }, 
-        notes: { type: String  },
+        // notes: { type: String  },
         priceHourEur: { type: Number, required: true },
     },
     { timestamps: true }

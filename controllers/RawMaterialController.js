@@ -29,11 +29,14 @@ const RawMaterialController = {
     },
     async updateRawMaterial(req, res) {
         try {
+            console.log(req.body);
+            console.log(req.params._id);
             const updatedRawMaterial = await RawMaterial.findByIdAndUpdate(
                 req.params._id,
                 req.body,
                 { new: true }
             );
+            console.log(updatedRawMaterial);
             res.send({ message: "Materia prima actualizada con éxito", rawMaterial: updatedRawMaterial });
         } catch (error) {
             console.error(error);

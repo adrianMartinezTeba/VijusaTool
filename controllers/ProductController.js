@@ -5,22 +5,39 @@ const OperationToFollow = require("../models/OperationToFollow");
 const ProductController = {
     async createProduct(req, res, next) {
         try {
-            const product = await Product.create(
-                {...req.body,
-                number: req.number});
-           // Actualizar el contacto asociado con el productId
-           const contactId = req.body.contactId;
-           await Contact.findByIdAndUpdate(
-               contactId,
-               { $push: { productsIds: product._id } },
-               { new: true }
-           );
+            // Crea el producto
+            const product = await Product.create({
+                ...req.body,
+                number: req.number
+            });
+    
+            // Actualiza el contacto asociado con el productId
+            const contactId = req.body.contactId;
+            console.log(req.body.operationToFollow);
+    
+            await Contact.findByIdAndUpdate(
+                contactId,
+                { $push: { productsIds: product._id } },
+                { new: true }
+            );
+    
+            // Verifica si se ha proporcionado un ID de ruta
+            if (req.body.ruteToFollow) {
+                // Actualiza la ruta con el ID del producto
+                await RuteToFollow.findByIdAndUpdate(
+                    req.body.ruteToFollow,
+                    { productId: product._id },
+                    { new: true }
+                );
+            }
+    
             res.status(201).json({ message: "Producto creado con éxito", product });
         } catch (error) {
             console.error(error);
             next(error);
         }
-    },
+    }
+    ,
 
     async getProducts(req, res) {
         try {
@@ -55,46 +72,92 @@ const ProductController = {
                     path: 'operationsToFollow.operationId',
                     model: 'OperationToFollow'
                 })
-                .populate('ruteToFollow');
+                .populate({
+                    path: 'ruteToFollow',
+                    populate: {
+                        path: 'rawMaterials.rawMaterialId',
+                        model: 'RawMaterial'
+                    }
+                })
+                .populate(
+                    {
+                        path: 'ruteToFollow',
+                        populate: {
+                            path: 'rawMaterials.operationsToFollow.operationId',
+                            model: 'OperationToFollow'
+                        }
+                    }
+                )                .populate(
+                    {
+                        path: 'ruteToFollow',
+                        populate: {
+                            path: 'rawMaterials.operationsToFollow._id',
+                            model: 'OperationToFollow'
+                        }
+                    }
+                )
+                // .populate('ruteToFollow.rawMaterials.operationsToFollow.operationId');
+            res.send( product );
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
+    }
+,    
     
-            const rtf = await RuteToFollow.findById(product.ruteToFollow).populate({
+async updateProduct(req, res) {
+    try {
+        // Encuentra el producto por ID y actualiza los campos que se envían en el cuerpo de la solicitud
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params._id,
+            req.body,
+            { new: true, runValidators: true } // `runValidators` asegura que las validaciones de Mongoose se ejecuten
+        ) .populate('contactId')
+        .populate({
+            path: 'rawMaterials.rawMaterialId',
+            model: 'RawMaterial'
+        })
+        .populate({
+            path: 'operationsToFollow.operationId',
+            model: 'OperationToFollow'
+        })
+        .populate({
+            path: 'ruteToFollow',
+            populate: {
                 path: 'rawMaterials.rawMaterialId',
                 model: 'RawMaterial'
-            });
-    
-            // Obtener información completa de las operaciones a seguir en rtf
-            const operationsToFollowInfo = rtf.rawMaterials.map(material => material.operationsToFollow)
-                .flat()
-                .map(operation => ({
-                    operationId: operation.operationId,
-                    notes: operation.notes,
-                }));
-    
-            // Obtener las operaciones por sus IDs
-            const operationIds = operationsToFollowInfo.map(operation => operation.operationId);
-            const allOperations = await OperationToFollow.find({ _id: { $in: operationIds } });
-    
-            console.log({ product: product, rtf: rtf, operationsToFollowInfo: operationsToFollowInfo, allOperations: allOperations });
-            res.send(product);
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
+            }
+        })
+        .populate(
+            {
+                path: 'ruteToFollow',
+                populate: {
+                    path: 'rawMaterials.operationsToFollow.operationId',
+                    model: 'OperationToFollow'
+                }
+            }
+        )                .populate(
+            {
+                path: 'ruteToFollow',
+                populate: {
+                    path: 'rawMaterials.operationsToFollow._id',
+                    model: 'OperationToFollow'
+                }
+            }
+        )
+        // Verifica si se encontró el producto
+        if (!updatedProduct) {
+            return res.status(404).send({ message: "Producto no encontrado" });
         }
-    },
-    
-    async updateProduct(req, res) {
-        try {
-            const updatedProduct = await Product.findByIdAndUpdate(
-                req.params._id,
-                req.body,
-                { new: true }
-            );
-            res.send({ message: "Producto actualizado con éxito", product: updatedProduct });
-        } catch (error) {
-            console.error(error);
-            res.status(500).send(error);
-        }
-    },
+
+        // Población de los datos relacionados
+        res.send({ message: "Producto actualizado con éxito", product: updatedProduct });
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ message: "Error al actualizar el producto", error });
+    }
+}
+,
 
     async deleteProduct(req, res) {
         try {

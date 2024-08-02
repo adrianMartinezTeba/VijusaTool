@@ -3,34 +3,19 @@ const Product = require("../models/Product");
 const RuteToFollowController = {
     async createRuteToFollow(req, res, next) {
         try {
-            // Desestructura el productId del cuerpo de la solicitud
-            const { productId, ...ruteToFollowData } = req.body;
-    
-            // Verifica si productId está presente en el cuerpo de la solicitud
-            if (!productId) {
-                return res.status(400).json({ message: "ProductId is required to associate the RuteToFollow with a product." });
-            }
-    
-            // Busca el producto correspondiente por su productId
-            const product = await Product.findById(productId);
-            
-            // Verifica si el producto existe
-            if (!product) {
-                return res.status(404).json({ message: "Product not found." });
-            }
-    
-            // Asocia la ruta a seguir con el producto
-            const ruteToFollow = await RuteToFollow.create({ ...ruteToFollowData, productId });
-    
-            // Actualiza el campo ruteToFollow del producto con el ID de la nueva ruta a seguir
-            product.ruteToFollow = ruteToFollow._id;
-            await product.save();
-    
-            res.status(201).json({ message: "Ruta creada con éxito", ruteToFollow });
+            console.log(req.body);
+            const ruteToFollow = await RuteToFollow.create(req.body);
+            res.status(201).json({
+                message: "Ruta creada con éxito",
+                ruteToFollowId: ruteToFollow._id // Devuelve el ID de la ruta creada
+            });
         } catch (error) {
             console.error(error);
             next(error);
         }
+    },
+    async setProductIdOnRTF(req, res) {
+
     },
     async getRutesToFollow(req, res) {
         try {
@@ -44,7 +29,11 @@ const RuteToFollowController = {
 
     async getRuteToFollowById(req, res) {
         try {
-            const ruteToFollow = await RuteToFollow.findById(req.params._id);
+            const ruteToFollow = await RuteToFollow.findById(req.params._id)
+            .populate('productId')
+            .populate('rawMaterials.rawMaterialId'
+            )
+            .populate({path:'rawMaterials',populate:{path:'operationsToFollow.operationId',model:'OperationToFollow'}});
             res.send(ruteToFollow);
         } catch (error) {
             console.error(error);
@@ -54,6 +43,7 @@ const RuteToFollowController = {
 
     async updateRuteToFollow(req, res) {
         try {
+            console.log(req.body);
             const updatedRuteToFollow = await RuteToFollow.findByIdAndUpdate(
                 req.params._id,
                 req.body,

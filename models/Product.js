@@ -20,7 +20,7 @@ const ProductSchema = new mongoose.Schema(
             // Para la sección "Operaciones a seguir"
             operationId: { type: ObjectId, ref: "OperationToFollow" }, // Referencia al modelo OperationToFollow
             notes: { type: String }, // Notas personalizadas
-            expectedTime: { type: String }, // Tiempo esperado para la operación
+            expectedTime: { type: Number }, // Tiempo esperado para la operación
             priceOperation: { type: Number, required: true },//el resultado de el tiempo esperado * el valor del precio por hora trabajado ajustando que si ha durado la operacion 10 segundos y cobran 45€ la hora que salga lo que seria aqui por ejemplo y el precio de la hora trabajada viene en operationId 
         }],
         ruteToFollow: {
